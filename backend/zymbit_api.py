@@ -1,11 +1,10 @@
 
 import ecdsa
-import zymkey
 from fastapi import HTTPException
+from zymkey import Zymkey
 
-zk = zymkey.client
+zk = Zymkey()
 public_key_bytes = zk.get_public_key(slot=0, foreign=False)
-verifying_key = ecdsa.VerifyingKey.from_string(public_key_bytes, curve=ecdsa.NIST256p)
 
 
 def sign_document_bytes(data: bytes) -> bytearray:

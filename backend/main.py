@@ -51,7 +51,7 @@ async def verify_sign(
     signature = await signature_file.read()
 
     try:
-        valid = verify_signature(content, signature.hex())
+        valid = verify_signature(content, signature)
         return {"valid": valid}
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Verification failed: {str(e)}")

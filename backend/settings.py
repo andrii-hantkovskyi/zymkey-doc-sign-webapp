@@ -15,3 +15,5 @@ CORS_ALLOWED_ORIGINS = env.list(
         "https://your-production-domain.com",
     ],
 )
+CORS_ALLOWED_REGEX_ORIGINS = env.str("CORS_ALLOWED_REGEX_ORIGINS", "")
+CORS_USE_REGEX = env.bool("CORS_USE_REGEX", False)

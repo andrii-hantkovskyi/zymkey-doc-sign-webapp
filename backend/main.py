@@ -3,11 +3,11 @@ from secrets import token_urlsafe
 
 from auth import admin_required
 from auth import router as auth_router
-from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from models import User
-from settings import CORS_ALLOWED_ORIGINS, ZYMBIT_CONNECNTED
+from settings import CORS_ALLOWED_ORIGINS, CORS_ALLOWED_REGEX_ORIGINS, CORS_USE_REGEX, ZYMBIT_CONNECNTED
 
 if not ZYMBIT_CONNECNTED:
     from mock_api import sign_document_bytes, verify_signature
@@ -15,12 +15,13 @@ else:
     from zymbit_api import sign_document_bytes, verify_signature
 
 app = FastAPI()
+cors_origins_kwargs = {'allow_origins': CORS_ALLOWED_ORIGINS} if not CORS_USE_REGEX else {'allow_origin_regex': CORS_ALLOWED_REGEX_ORIGINS}
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=CORS_ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    **cors_origins_kwargs,
 )
 app.include_router(auth_router)
 
@@ -31,6 +32,9 @@ async def sign_document(
 ):
     content = await file.read()
     signature = sign_document_bytes(content)
+    print('='*100)
+    print(signature)
+    print('='*100)
 
     sig_buffer = io.BytesIO(signature)
     sig_buffer.seek(0)

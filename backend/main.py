@@ -1,8 +1,9 @@
 import io
+from secrets import token_urlsafe
 
 from auth import admin_required
 from auth import router as auth_router
-from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
+from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from models import User
@@ -34,12 +35,10 @@ async def sign_document(
     sig_buffer = io.BytesIO(signature)
     sig_buffer.seek(0)
 
-    signature_filename = f"{file.filename}.sig"
-
     return StreamingResponse(
         sig_buffer,
         media_type="application/octet-stream",
-        headers={"Content-Disposition": f"attachment; filename={signature_filename}"},
+        headers={"Content-Disposition": f"attachment; filename={token_urlsafe(16)}"},
     )
 
 

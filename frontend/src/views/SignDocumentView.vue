@@ -13,7 +13,7 @@ const router = useRouter()
 
 onMounted(() => {
   if (!auth.isAdmin) {
-    router.push('/login')
+    router.push('/')
   }
 })
 

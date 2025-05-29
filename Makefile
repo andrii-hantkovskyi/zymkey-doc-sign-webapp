@@ -8,6 +8,11 @@ build-frontend:
 	docker-compose build --build-arg VITE_API_BASE_URL="http://$(IP_ADDR):$(PORT)" frontend
 
 start:
+	@echo "Waiting for network to be ready..."
+	@while ! ip -4 addr show $(INTERFACE) | grep -qP '(?<=inet\s)\d+(\.\d+){3}'; do \
+		echo "No IP on $(INTERFACE), waiting..."; \
+		sleep 2; \
+	done
 	make build-frontend && \
 	cd backend && \
 	screen -dmS backend bash -c '. ./venv/bin/activate && exec uvicorn main:app --host 0.0.0.0 --port $(PORT) > ../uvicorn.log 2>&1' && \

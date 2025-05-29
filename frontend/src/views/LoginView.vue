@@ -18,7 +18,6 @@ const login = async () => {
     form.append('username', username.value)
     form.append('password', password.value)
 
-    console.log('API_BASE_URL', API_BASE_URL)
     const res = await axios.post(`${API_BASE_URL}/token`, form)
 
     const token = res.data.access_token
